@@ -133,7 +133,12 @@ sed -i \
 	-e '/^## BEGIN PROVISION/,/^## END PROVISION/d' \
 	/etc/hosts
 cat >> /etc/hosts <<MARK
-
+## BEGIN PROVISION
+192.168.50.250      control
+192.168.50.10       server0
+192.168.50.20       server1
+192.168.50.30       server2
+## END PROVISION
 MARK
 
 # Désactive l'update automatique du cache apt + indexation (lourd en CPU)

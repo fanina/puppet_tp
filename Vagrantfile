@@ -10,7 +10,7 @@ Vagrant.configure('2') do |config|
   config.vm.provider 'virtualbox' do |vb|
     # vb.customize ['modifyvm', :id, '--cpuexecutioncap', '50']
     vb.memory = '2000'
-    vb.cpus = 2
+    vb.cpus = 1
     vb.gui = false
   end
 
@@ -43,7 +43,7 @@ Vagrant.configure('2') do |config|
   end
 
   config.vm.define 'CACHE' do |machine|
-    machine.vm.hostname = 'DB'
+    machine.vm.hostname = 'CACHE'
     machine.vm.network 'private_network', ip: '192.168.50.50' # <<<< Corriger ICI
   end
 
