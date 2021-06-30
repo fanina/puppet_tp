@@ -79,6 +79,9 @@ if [ "$HOSTNAME" = "control" ]; then
 	mkdir -p /root/.ssh
 	cp /vagrant/githosting_rsa /home/vagrant/.ssh/githosting_rsa
 	cp /vagrant/githosting_rsa.pub /home/vagrant/.ssh/githosting_rsa.pub
+	# lister les agents certificat
+	# puppet cert list
+	# puppet cert sign --all
 	# Configuration de SSH en fonction des hosts
 	cat > /home/vagrant/.ssh/config <<-MARK
 	Host $GIT_HOST
@@ -111,21 +114,45 @@ if [ "$HOSTNAME" = "control" ]; then
 	fi
 	su - vagrant -c "git config --global user.name '$USER_NAME'"
 	su - vagrant -c "git config --global user.email '$USER_EMAIL'"
+
 elif [ "$HOSTNAME" = "DB" ]; then
 	# J'installe Mariadb dessus
 	apt-get update && apt-get install -y \
 		mariadb-server 
     apt-get install -y \
 		puppet
-    systemctl restart puppet
+    systemctl start puppet
     ps aux | grep puppet
+	cat > /etc/puppet/puppet.conf <<-MARK
+    [main]
+    ssldir = /var/lib/puppet/ssl
+    certname = $HOSTNAME
+    server = control
+    environment = production
+    [master]
+    vardir = /var/lib/puppet
+    cadir = /var/lib/puppet/ssl/ca
+    dns_alt_names = puppet
+	MARK
 	puppet agent --test
 else
 	# J'installe puppet dessus
 	apt-get install -y \
 		puppet
-    systemctl restart puppet
+    systemctl start puppet
+	systemctl status puppet
     ps aux | grep puppet
+	cat > /etc/puppet/puppet.conf <<-MARK
+    [main]
+    ssldir = /var/lib/puppet/ssl
+    certname = $HOSTNAME
+    server = control
+    environment = production
+    [master]
+    vardir = /var/lib/puppet
+    cadir = /var/lib/puppet/ssl/ca
+    dns_alt_names = puppet
+	MARK
 	puppet agent --test
 fi
 
