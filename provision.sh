@@ -119,12 +119,14 @@ elif [ "$HOSTNAME" = "DB" ]; then
 		puppet
     systemctl restart puppet
     ps aux | grep puppet
+	puppet agent --test
 else
 	# J'installe puppet dessus
 	apt-get install -y \
 		puppet
     systemctl restart puppet
     ps aux | grep puppet
+	puppet agent --test
 fi
 
 # J'utilise /etc/hosts pour associer les IP aux noms de domaines
